@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>RoadGuard AI</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <header class="header">
+
+        <div>
+
+            <h1>ROADGUARD AI</h1>
+
+            <p>
+                Road Hazard Detection System
+            </p>
+
+        </div>
+
+
+        <div class="status">
+
+            <span
+                id="statusDot"
+                class="status-dot"
+            ></span>
+
+            <span id="statusText">
+                Checking system...
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================================================= -->
+    <!-- MODEL INFORMATION -->
+    <!-- ================================================= -->
+
+    <section class="model-info">
+
+
+        <div class="info-card">
+
+            <span class="label">
+                MODEL
+            </span>
+
+            <span class="value">
+                YOLO26n
+            </span>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <span class="label">
+                CLASSES
+            </span>
+
+            <span class="value">
+                2
+            </span>
+
+        </div>
+
+
+        <div class="info-card">
+
+            <span class="label">
+                DEVICE
+            </span>
+
+            <span
+                class="value"
+                id="device"
+            >
+                Checking...
+            </span>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- MAIN -->
+    <!-- ================================================= -->
+
+    <main class="main-grid">
+
+
+        <!-- ================================================= -->
+        <!-- DETECTION PANEL -->
+        <!-- ================================================= -->
+
+        <section class="panel">
+
+
+            <div class="panel-header">
+
+                <h2>
+                    Detection
+                </h2>
+
+                <span id="processingStatus">
+                    Ready
+                </span>
+
+            </div>
+
+
+            <!-- MODE BUTTONS -->
+
+            <div class="mode-buttons">
+
+                <button
+                    id="imageModeButton"
+                    class="mode-button active"
+                >
+                    Image
+                </button>
+
+
+                <button
+                    id="videoModeButton"
+                    class="mode-button"
+                >
+                    Video
+                </button>
+
+                <button
+                    id="cameraModeButton"
+                    class="mode-button"
+                    type="button"
+                >
+                    Live Camera
+                </button>
+
+            </div>
+
+
+            <!-- IMAGE / VIDEO DISPLAY -->
+
+            <div
+                id="imageContainer"
+                class="image-container"
+            >
+
+
+                <div
+                    id="placeholder"
+                    class="placeholder"
+                >
+
+                    <div class="upload-icon">
+                        +
+                    </div>
+
+                    <p>
+                        Upload an image or video
+                    </p>
+
+                </div>
+
+
+                <img
+                    id="resultImage"
+                    class="result-image hidden"
+                    alt="Detection result"
+                >
+
+
+                <video
+                    id="resultVideo"
+                    class="result-video hidden"
+                    controls
+                ></video>
+
+                <div id="cameraStage" class="camera-stage hidden">
+                    <video
+                        id="cameraPreview"
+                        class="camera-preview"
+                        autoplay
+                        muted
+                        playsinline
+                    ></video>
+                    <canvas
+                        id="cameraOverlay"
+                        class="camera-overlay"
+                        aria-label="Live road hazard detections"
+                    ></canvas>
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- CONTROLS -->
+            <!-- ================================================= -->
+
+            <div class="controls">
+
+
+                <label for="confidence">
+
+                    Confidence Threshold
+
+                </label>
+
+
+                <div class="confidence-control">
+
+
+                    <input
+                        type="range"
+                        id="confidence"
+                        min="0.10"
+                        max="0.90"
+                        value="0.50"
+                        step="0.05"
+                    >
+
+
+                    <span
+                        id="confidenceValue"
+                    >
+                        50%
+                    </span>
+
+
+                </div>
+
+
+                <!-- Hidden image input -->
+
+                <input
+                    type="file"
+                    id="imageInput"
+                    accept="image/*"
+                    hidden
+                >
+
+
+                <!-- Hidden video input -->
+
+                <input
+                    type="file"
+                    id="videoInput"
+                    accept="video/*"
+                    hidden
+                >
+
+
+                <!-- Image button -->
+
+                <button
+                    id="uploadButton"
+                    class="primary-button"
+                >
+                    Upload Image
+                </button>
+
+
+                <!-- Video button -->
+
+                <button
+                    id="uploadVideoButton"
+                    class="primary-button hidden"
+                    type="button"
+                >
+                    Upload Video
+                </button>
+
+                <button
+                    id="startCameraButton"
+                    class="primary-button hidden"
+                    type="button"
+                >
+                    Start Camera
+                </button>
+
+                <button
+                    id="stopCameraButton"
+                    class="primary-button hidden"
+                    type="button"
+                >
+                    Stop Camera
+                </button>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- RESULTS PANEL -->
+        <!-- ================================================= -->
+
+        <section class="panel">
+
+
+            <div class="panel-header">
+
+                <h2>
+                    Detection Results
+                </h2>
+
+            </div>
+
+
+            <!-- STATISTICS -->
+
+            <div class="stats-grid">
+
+
+                <div class="stat-card">
+
+                    <span class="stat-label">
+                        POTHOLES
+                    </span>
+
+                    <span
+                        id="potholeCount"
+                        class="stat-value"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-label">
+                        SPEED-BREAKERS
+                    </span>
+
+                    <span
+                        id="speedBreakerCount"
+                        class="stat-value"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-label">
+                        TOTAL HAZARDS
+                    </span>
+
+                    <span
+                        id="totalCount"
+                        class="stat-value"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-label">
+                        INFERENCE / FPS
+                    </span>
+
+                    <span
+                        id="inferenceTime"
+                        class="stat-value"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- DETECTION LIST -->
+
+            <div class="detection-section">
+
+
+                <h3>
+                    Detection Details
+                </h3>
+
+
+                <div
+                    id="detectionList"
+                    class="detection-list"
+                >
+
+                    <p class="empty-message">
+                        No detections yet.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+    <!-- ================================================= -->
+    <!-- FOOTER -->
+    <!-- ================================================= -->
+
+    <footer>
+
+        RoadGuard AI • YOLO26n Road Hazard Detection
+
+    </footer>
+
+
+</div>
+
+
+<script src="/static/app.js"></script>
+
+</body>
+
+</html>
