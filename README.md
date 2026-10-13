@@ -31,3 +31,7 @@ python -m uvicorn app:app --reload
 Open <http://127.0.0.1:8000>. The API health check is available at `/api/health`.
 
 The app selects CUDA when a compatible GPU is available and otherwise runs on CPU. Uploads and generated results are stored locally in `uploads/` and `outputs/`; these runtime files are excluded from Git.
+
+## GitHub Pages
+
+The static frontend is published at <https://mahajanaaryan.github.io/RoadGuardAI/>. GitHub Pages cannot run the FastAPI server or YOLO model, so detection features require the backend to be hosted separately.
